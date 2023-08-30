@@ -53,3 +53,13 @@
     text-align: center;
     width: 280px;
   }
+
+  .clear {
+    width: 240px;
+    background-color: #cccccc;
+    text-align: center;
+  }
+
+  .ativa {
+    background-color: yellow;
+  }

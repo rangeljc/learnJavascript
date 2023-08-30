@@ -25,5 +25,13 @@ for (i=0; i < lista_teclas.length; i++) {
     tecla.onclick = function () {
         tocar_som(botao);
     }
+    
+    tecla.onkeydown = function () {
+        tecla.classList.add('ativa');
+    }
+
+    tecla.onkeyup = function () {
+        tecla.classList.remove('ativa');
+    }
 
 }
