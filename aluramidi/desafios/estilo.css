@@ -34,7 +34,8 @@
     padding: 10px;
   }
   
-  input[type=button] {
+  /*input[type=button] {*/
+  .tecla {
     border-radius: 20px;
     cursor: pointer;
     font-family: 'Montserrat', sans-serif;
@@ -55,9 +56,15 @@
   }
 
   .clear {
-    width: 240px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    height: 80px;
+    width: 280px;
+    font-size: 22px;
     background-color: #cccccc;
     text-align: center;
+    margin-top: 24px;
   }
 
   .ativa {
