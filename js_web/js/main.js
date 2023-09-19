@@ -46,7 +46,34 @@ function criaItem(item, quantidade) {
     novoItem.appendChild(numeroItem)
     novoItem.innerHTML += item
 
+    novoItem.appendChild(excluirItem(item))
+
     lista.appendChild(novoItem)   
+}
+
+
+function excluirItem(item) {
+    const btExcluir = document.createElement('button')
+    btExcluir.innerText = 'X'
+    btExcluir.onclick = function() {
+        apagaItem(item)
+        this.parentNode.remove()
+    }
+    return btExcluir
+}
+
+function apagaItem(item) {
+    indice = itens['itens'].findIndex(i => i == item)
+    
+    itens['itens'].splice(indice, 1)
+    itens['quantidades'].splice(indice, 1)
+
+    if (itens['itens'].length === 0){
+        localStorage.clear()
+    } else {
+        localStorage.setItem('itens', JSON.stringify(itens['itens']))
+        localStorage.setItem('quantidades', JSON.stringify(itens['quantidades']))
+    }
 }
 
 
@@ -82,5 +109,3 @@ limparLista.onclick = function() {
     localStorage.clear()
     location.reload()
 }
-
-//console.log(limparLista)
