@@ -1,19 +1,12 @@
+// para este caso, a constante itens é um lista em que cada item é gravado
+// como um dicionário com as informações desejadas.
 const form = document.getElementById('novoItem')
 const lista = document.getElementById('lista')
 const limparLista = document.getElementById('limparLista')
 
-var itens = {
-    'itens': JSON.parse(localStorage.getItem('itens')),
-    'quantidades': JSON.parse(localStorage.getItem('quantidades'))
-}
+const itens = JSON.parse(localStorage.getItem('mochila')) || []
 
-if (itens['itens'] === null){
-    itens = {
-        'itens': [], 
-        'quantidades': []
-    }
-}
-else {
+if (itens.length > 0){
     atualizaLista(itens)
 }
 
@@ -21,14 +14,22 @@ form.addEventListener('submit', (evento) =>{
     evento.preventDefault()
     
     const item = evento.target.elements['nome']
-    const quantidade = evento.target.elements['quantidade']
-    
-    if (itens['itens'].includes(item.value)){
-        atualizaItem(item.value, quantidade.value)
+    const quantidade = evento.target.elements['quantidade']   
+    const itemAtual = {
+        'item': item.value,
+        'quantidade': parseInt(quantidade.value, 10)
+    }
+
+    const existe = itens.find( elemento => elemento.item === itemAtual.item )
+
+    console.log(existe)
+
+    if (existe){
+        atualizaItem(itemAtual)
     }
     else {
-        criaItem(item.value, quantidade.value)
-        armazenaStorage(item.value, quantidade.value)
+        criaItem(itemAtual)
+        armazenaStorage(itemAtual)
     }
     item.value = ''
     quantidade.value = ''
@@ -36,15 +37,15 @@ form.addEventListener('submit', (evento) =>{
 })
 
 
-function criaItem(item, quantidade) {
+function criaItem(item) {
     const novoItem = document.createElement('li')
     novoItem.classList.add('item')
 
     const numeroItem = document.createElement('strong')
-    numeroItem.innerHTML = quantidade
+    numeroItem.innerHTML = item['quantidade'].toString()
 
     novoItem.appendChild(numeroItem)
-    novoItem.innerHTML += item
+    novoItem.innerHTML += item['item']
 
     novoItem.appendChild(excluirItem(item))
 
@@ -63,46 +64,42 @@ function excluirItem(item) {
 }
 
 function apagaItem(item) {
-    indice = itens['itens'].findIndex(i => i == item)
-    
-    itens['itens'].splice(indice, 1)
-    itens['quantidades'].splice(indice, 1)
+    const i = itens.findIndex(elemento => elemento.item === item.item)
 
-    if (itens['itens'].length === 0){
+    itens.splice(i, 1)
+    
+    if (itens.length === 0){
         localStorage.clear()
     } else {
-        localStorage.setItem('itens', JSON.stringify(itens['itens']))
-        localStorage.setItem('quantidades', JSON.stringify(itens['quantidades']))
+        localStorage.setItem('mochila', JSON.stringify(itens))
     }
 }
 
 
-function atualizaItem(item, quantidade){
-    indice = itens['itens'].findIndex(i => i == item)
-    novoValor = itens['quantidades'][indice] + parseInt(quantidade, 10)
+function atualizaItem(item){
+    const i = itens.findIndex(elemento => elemento.item === item.item)
     
-    itens['quantidades'][indice] = novoValor
+    novoValor = itens[i]['quantidade'] + item['quantidade']
     
-    localStorage.setItem('quantidades', JSON.stringify(itens['quantidades']))
+    itens[i]['quantidade'] = novoValor
+    
+    localStorage.setItem('mochila', JSON.stringify(itens))
     location.reload()
 }
 
 
-function armazenaStorage(item, quantidade){
+function armazenaStorage(item){
 
-    itens['itens'].push(item)
-    itens['quantidades'].push(parseInt(quantidade, 10))
-    
-    localStorage.setItem('quantidades', JSON.stringify(itens['quantidades']))
-    localStorage.setItem('itens', JSON.stringify(itens['itens']))
+    itens.push(item)
+    localStorage.setItem('mochila', JSON.stringify(itens))
 
 }
 
 
 function atualizaLista(itens) {
-    for (i=0; i<itens['itens'].length; i++){
-        criaItem(itens['itens'][i], itens['quantidades'][i])
-    }
+    itens.forEach(elemento => {
+        criaItem(elemento)        
+    })
 }
 
 limparLista.onclick = function() {
